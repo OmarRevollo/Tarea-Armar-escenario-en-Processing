@@ -1,22 +1,25 @@
 PImage miImagen;
-PImage imagenCursor;
-PImage jefeFinal;
 PImage imagenDisparo;
 PImage imagenAsteroide;
 ArrayList<Disparo> disparos;
 ArrayList<Asteroide> asteroides; 
-float imgX, imgY;
+
+Jefe jefeFinal;
+Nave_de_jugador imagenCursor;
 
 void setup() {
   size(1000, 800);
+  
   miImagen = loadImage("data/fondoimg.jpg");
   miImagen.resize(width, height);
   
-  imagenCursor = loadImage("data/nave.png");
-  imagenCursor.resize(150, 100);
+  PImage imagenNave = loadImage("data/nave.png");
+  imagenNave.resize(150, 100);
+  imagenCursor = new Nave_de_jugador(imagenNave);
   
-  jefeFinal = loadImage("data/94791.png");
-  jefeFinal.resize(1000, 300);
+  PImage imagenJefeFinal = loadImage("data/94791.png");
+  imagenJefeFinal.resize(1000, 300);
+  jefeFinal = new Jefe(imagenJefeFinal);
   
   imagenDisparo = loadImage("data/disparo.png");
   imagenDisparo.resize(100, 100);
@@ -24,24 +27,23 @@ void setup() {
   imagenAsteroide = loadImage("data/meteorito.png");
   imagenAsteroide.resize(80, 80);
   
-  imgX = width / 3;
-  imgY = height / 3;
-  
   disparos = new ArrayList<Disparo>();
   asteroides = new ArrayList<Asteroide>();
 }
 
 void draw() {
-  background(miImagen);
-  imgX = mouseX;
-  imgY = mouseY;
+  tint(255, 0, 0); // Adds a red tint to the image
+  image(miImagen, 0, 0); // Draws the image with the red tint
+  noTint(); // Removes the tint for other images
   
-  image(imagenCursor, imgX, imgY);
-  image(jefeFinal, width / 2 - jefeFinal.width / 2, -10);
+  imagenCursor.mover();
+  imagenCursor.mostrar();
+  
+  jefeFinal.mostrar();
   
   // Genera disparos aleatoriamente
   if (random(1) < 0.03) {
-    Disparo nuevoDisparo = new Disparo(imgX, -10);
+    Disparo nuevoDisparo = new Disparo(imagenCursor.x, -10);
     disparos.add(nuevoDisparo);
   }
   
@@ -110,5 +112,38 @@ class Asteroide {
   
   void mostrar() {
     image(imagenAsteroide, x - diametro / 2, y - diametro / 2);
+  }
+}
+
+class Jefe {
+  PImage imagen;
+  float x, y;
+
+  Jefe(PImage imagen) {
+    this.imagen = imagen;
+    this.x = width / 2 - imagen.width / 2;
+    this.y = -10;
+  }
+
+  void mostrar() {
+    image(imagen, x, y);
+  }
+}
+
+class Nave_de_jugador {
+  PImage imagen;
+  float x, y;
+
+  Nave_de_jugador(PImage imagen) {
+    this.imagen = imagen;
+  }
+
+  void mover() {
+    x = mouseX;
+    y = mouseY;
+  }
+
+  void mostrar() {
+    image(imagen, x, y);
   }
 }
